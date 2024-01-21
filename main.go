@@ -25,6 +25,7 @@ var (
 		NewWatermelon(100, -6000),
 	}
 	world = World{X: 0, Y: 0, Width: screenWidth, Height: screenHeight}
+	next  = NewApple(world.Width/2, 0)
 
 	calc = &Calc{World: world}
 	draw = &Draw{}
@@ -37,6 +38,7 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	draw.World(screen, world)
+	draw.Fruit(screen, world, next)
 	draw.Fruits(screen, world, fruits)
 }
 
