@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+	"math/rand"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -15,24 +17,48 @@ type Game struct {
 }
 
 var (
-	fruits = []*Fruit{
-		NewApple(100, 0),
-		NewApple(110, -100),
-		NewOrange(110, -2000),
-		NewGrape(110, -3000),
-		NewPineapple(140, -4000),
-		NewMelon(150, -5000),
-		NewWatermelon(100, -6000),
-	}
-	world = World{X: 0, Y: 0, Width: screenWidth, Height: screenHeight}
-	next  = NewApple(world.Width/2, 0)
+	fruits = []*Fruit{}
+	world  = World{X: 0, Y: 0, Width: screenWidth, Height: screenHeight}
+	next   = NewApple(world.Width/2, 0)
 
 	calc = &Calc{World: world}
 	draw = &Draw{}
+
+	isKeyPressed = false
 )
 
 func (g *Game) Update() error {
 	fruits = calc.Fruits(fruits)
+
+	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
+		next.X -= 2
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
+		next.X += 2
+	}
+	if ebiten.IsKeyPressed(ebiten.KeySpace) {
+		isKeyPressed = true
+	} else if isKeyPressed {
+		isKeyPressed = false
+		fruits = append(fruits, next)
+		r := rand.New(rand.NewSource(time.Now().UnixNano()))
+		f := r.Float64()
+		if f < 0.5 {
+			next = NewApple(next.X, next.Y)
+		} else if f < 0.75 {
+			next = NewOrange(next.X, next.Y)
+		} else {
+			next = NewGrape(next.X, next.Y)
+		}
+	}
+
+	if next.X-next.Radius < 0 {
+		next.X = next.Radius
+	}
+	if world.Width-next.Radius < next.X {
+		next.X = world.Width - next.Radius
+	}
+
 	return nil
 }
 
