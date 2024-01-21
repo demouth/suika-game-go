@@ -11,12 +11,68 @@ const (
 
 type Calc struct {
 	World World
+	Score int
 }
 
-func (u *Calc) Fruits(fruits []*Fruit) {
+func (u *Calc) Fruits(fruits []*Fruit) []*Fruit {
+	fruits = u.combine(fruits)
 	u.move(fruits)
 	u.hitTest(fruits)
 	u.screenWrap(fruits)
+	return fruits
+}
+
+func (u *Calc) combine(fruits []*Fruit) []*Fruit {
+	newFruits := make([]*Fruit, 0)
+
+	l := len(fruits)
+	for i := 0; i < l; i++ {
+		f := fruits[i]
+		for j := i + 1; j < l; j++ {
+			g := fruits[j]
+			if f.Remove || g.Remove {
+				continue
+			}
+			dx := g.X - f.X
+			dy := g.Y - f.Y
+			d := math.Sqrt(dx*dx + dy*dy)
+			minD := f.Radius + g.Radius
+			if d < minD && f.Type == g.Type {
+				// collision
+				f.Remove = true
+				g.Remove = true
+				var next *Fruit
+				if f.Type == APPLE {
+					next = NewOrange((f.X+g.X)/2, (f.Y+g.Y)/2)
+					u.Score += 10
+				} else if f.Type == ORANGE {
+					next = NewGrape((f.X+g.X)/2, (f.Y+g.Y)/2)
+					u.Score += 20
+				} else if f.Type == GRAPE {
+					next = NewPineapple((f.X+g.X)/2, (f.Y+g.Y)/2)
+					u.Score += 30
+				} else if f.Type == PINEAPPLE {
+					next = NewMelon((f.X+g.X)/2, (f.Y+g.Y)/2)
+					u.Score += 40
+				} else if f.Type == MELON {
+					next = NewWatermelon((f.X+g.X)/2, (f.Y+g.Y)/2)
+					u.Score += 50
+				} else if f.Type == WATERMELON {
+					u.Score += 60
+				}
+				if next != nil {
+					newFruits = append(newFruits, next)
+				}
+			}
+		}
+	}
+	for i := 0; i < l; i++ {
+		f := fruits[i]
+		if !f.Remove {
+			newFruits = append(newFruits, f)
+		}
+	}
+	return newFruits
 }
 
 func (u *Calc) move(fruits []*Fruit) {

@@ -16,6 +16,7 @@ type Fruit struct {
 	VY     float64
 	Radius float64
 	Type   int
+	Remove bool
 }
 
 func NewApple(x float64, y float64) *Fruit {

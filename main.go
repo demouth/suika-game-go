@@ -17,12 +17,12 @@ type Game struct {
 var (
 	fruits = []*Fruit{
 		NewApple(100, 0),
-		NewApple(100, -100),
-		NewGrape(110, -200),
-		NewOrange(110, -300),
-		NewPineapple(140, -400),
-		NewMelon(150, -500),
-		NewWatermelon(100, -600),
+		NewApple(110, -100),
+		NewOrange(110, -2000),
+		NewGrape(110, -3000),
+		NewPineapple(140, -4000),
+		NewMelon(150, -5000),
+		NewWatermelon(100, -6000),
 	}
 	world = World{X: 0, Y: 0, Width: screenWidth, Height: screenHeight}
 
@@ -31,7 +31,7 @@ var (
 )
 
 func (g *Game) Update() error {
-	calc.Fruits(fruits)
+	fruits = calc.Fruits(fruits)
 	return nil
 }
 
