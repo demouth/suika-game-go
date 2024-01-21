@@ -10,16 +10,36 @@ const (
 )
 
 type Calc struct {
-	World World
-	Score int
+	World   World
+	Score   int
+	HiScore int
 }
 
 func (u *Calc) Fruits(fruits []*Fruit) []*Fruit {
+	if u.isGameOver(fruits) {
+		if u.HiScore < u.Score {
+			u.HiScore = u.Score
+		}
+		u.Score = 0
+		return make([]*Fruit, 0)
+	}
+
 	fruits = u.combine(fruits)
-	u.move(fruits)
 	u.hitTest(fruits)
+	u.move(fruits)
 	u.screenWrap(fruits)
 	return fruits
+}
+
+func (u *Calc) isGameOver(fruits []*Fruit) bool {
+	l := len(fruits)
+	for i := 0; i < l; i++ {
+		f := fruits[i]
+		if f.Y < 0 {
+			return true
+		}
+	}
+	return false
 }
 
 func (u *Calc) combine(fruits []*Fruit) []*Fruit {
