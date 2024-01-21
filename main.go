@@ -19,10 +19,12 @@ var (
 		{X: 100, Y: 100, Radius: 25},
 		{X: 250, Y: 100, Radius: 50},
 	}
+	calc = &Calc{}
 	draw = &Draw{}
 )
 
 func (g *Game) Update() error {
+	calc.Fruits(fruits)
 	return nil
 }
 
