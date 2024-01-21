@@ -19,7 +19,9 @@ var (
 		{X: 100, Y: 100, VX: 0, VY: 0, Radius: 25},
 		{X: 250, Y: 100, VX: 0, VY: 0, Radius: 50},
 	}
-	calc = &Calc{}
+	world = World{X: 0, Y: 0, Width: screenWidth, Height: screenHeight}
+
+	calc = &Calc{World: world}
 	draw = &Draw{}
 )
 
@@ -29,7 +31,8 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	draw.Fruits(screen, fruits)
+	draw.World(screen, world)
+	draw.Fruits(screen, world, fruits)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {

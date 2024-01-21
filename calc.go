@@ -5,6 +5,7 @@ const (
 )
 
 type Calc struct {
+	World World
 }
 
 func (u *Calc) Fruits(fruits []*Fruit) {
