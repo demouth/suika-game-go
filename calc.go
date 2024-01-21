@@ -1,5 +1,9 @@
 package main
 
+const (
+	gravity = 0.4
+)
+
 type Calc struct {
 }
 
@@ -11,6 +15,8 @@ func (u *Calc) move(fruits []*Fruit) {
 	l := len(fruits)
 	for i := 0; i < l; i++ {
 		f := fruits[i]
-		f.Y += 1
+		f.VY += gravity
+		f.X += f.VX
+		f.Y += f.VY
 	}
 }
