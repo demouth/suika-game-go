@@ -16,8 +16,8 @@ type Game struct {
 
 var (
 	fruits = []*Fruit{
-		{X: 100, Y: 100, VX: 0, VY: 0, Radius: 25},
-		{X: 250, Y: 100, VX: 0, VY: 0, Radius: 50},
+		{X: 100, Y: 100, VX: -15, VY: 0, Radius: 25},
+		{X: 250, Y: 100, VX: 15, VY: 0, Radius: 50},
 	}
 	world = World{X: 0, Y: 0, Width: screenWidth, Height: screenHeight}
 
