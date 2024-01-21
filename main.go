@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 const (
@@ -66,6 +68,12 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	draw.World(screen, world)
 	draw.Fruit(screen, world, next)
 	draw.Fruits(screen, world, fruits)
+	msg := fmt.Sprintf(
+		"<-: move left\n->: move right\nspace: drop fruit\nSCORE: %d\nFPS: %0.2f",
+		calc.Score,
+		ebiten.ActualFPS(),
+	)
+	ebitenutil.DebugPrint(screen, msg)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
