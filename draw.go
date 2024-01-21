@@ -13,10 +13,25 @@ import (
 )
 
 var (
-	appleImage *ebiten.Image
+	appleImage      *ebiten.Image
+	grapeImage      *ebiten.Image
+	orangeImage     *ebiten.Image
+	pineappleImage  *ebiten.Image
+	melonImage      *ebiten.Image
+	watermelonImage *ebiten.Image
 
 	//go:embed assets/apple.png
 	apple_png []byte
+	//go:embed assets/grape.png
+	grape_png []byte
+	//go:embed assets/orange.png
+	orange_png []byte
+	//go:embed assets/pineapple.png
+	pineapple_png []byte
+	//go:embed assets/melon.png
+	melon_png []byte
+	//go:embed assets/watermelon.png
+	watermelon_png []byte
 )
 
 type Draw struct {
@@ -25,6 +40,11 @@ type Draw struct {
 
 func init() {
 	appleImage = loadImage(apple_png)
+	orangeImage = loadImage(orange_png)
+	grapeImage = loadImage(grape_png)
+	pineappleImage = loadImage(pineapple_png)
+	melonImage = loadImage(melon_png)
+	watermelonImage = loadImage(watermelon_png)
 }
 
 func loadImage(b []byte) *ebiten.Image {
@@ -52,7 +72,22 @@ func (d *Draw) World(screen *ebiten.Image, world World) {
 
 func (d *Draw) Fruit(screen *ebiten.Image, world World, f *Fruit) {
 	var img *ebiten.Image
-	img = appleImage
+	switch {
+	case f.Type == APPLE:
+		img = appleImage
+	case f.Type == ORANGE:
+		img = orangeImage
+	case f.Type == GRAPE:
+		img = grapeImage
+	case f.Type == PINEAPPLE:
+		img = pineappleImage
+	case f.Type == MELON:
+		img = melonImage
+	case f.Type == WATERMELON:
+		img = watermelonImage
+	default:
+		img = appleImage
+	}
 
 	w, h := img.Bounds().Dx(), img.Bounds().Dy()
 	d.op.Filter = ebiten.FilterLinear

@@ -16,15 +16,13 @@ type Game struct {
 
 var (
 	fruits = []*Fruit{
-		{X: 100, Y: 100, VX: -15, VY: 0, Radius: 25},
-		{X: 250, Y: 100, VX: 15, VY: 0, Radius: 50},
-		{X: 250, Y: -100, VX: 0, VY: 0, Radius: 25},
-		{X: 100, Y: -100, VX: 0, VY: 0, Radius: 25},
-		{X: 200, Y: -200, VX: 0, VY: 0, Radius: 25},
-		{X: 150, Y: -300, VX: 0, VY: 0, Radius: 50},
-		{X: 200, Y: -400, VX: 0, VY: 0, Radius: 25},
-		{X: 200, Y: -500, VX: 0, VY: 0, Radius: 25},
-		{X: 150, Y: -600, VX: 0, VY: 0, Radius: 75},
+		NewApple(100, 0),
+		NewApple(100, -100),
+		NewGrape(110, -200),
+		NewOrange(110, -300),
+		NewPineapple(140, -400),
+		NewMelon(150, -500),
+		NewWatermelon(100, -600),
 	}
 	world = World{X: 0, Y: 0, Width: screenWidth, Height: screenHeight}
 
