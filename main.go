@@ -20,7 +20,7 @@ type Game struct {
 
 var (
 	fruits = []*Fruit{}
-	world  = World{X: 0, Y: 0, Width: screenWidth, Height: screenHeight}
+	world  = World{X: 120, Y: 100, Width: 240, Height: 540}
 	next   = NewApple(world.Width/2, 0)
 
 	calc = &Calc{World: world}
