@@ -1,11 +1,13 @@
 # suika-game-go
 Writing Suika Game in Go
 
+https://demouth.github.io/suika-game-go/
+
 ![screen shot](docs/screenshot.png)
 
 ## Overview
 
-This repository contains a simple game implemented in Go using the Ebiten game engine. The game is inspired by the Suika Game!
+This repository contains a simple game implemented in Go using the Ebitengine game engine. The game is inspired by the Suika Game!
 
 ## How to Play
 
