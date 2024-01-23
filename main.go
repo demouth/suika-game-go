@@ -32,7 +32,10 @@ var (
 
 func (g *Game) leftTouched() bool {
 	for _, id := range g.touchIDs {
-		x, _ := ebiten.TouchPosition(id)
+		x, y := ebiten.TouchPosition(id)
+		if y >= screenHeight/2 {
+			return false
+		}
 		if x < screenWidth/2 {
 			return true
 		}
@@ -42,7 +45,10 @@ func (g *Game) leftTouched() bool {
 
 func (g *Game) rightTouched() bool {
 	for _, id := range g.touchIDs {
-		x, _ := ebiten.TouchPosition(id)
+		x, y := ebiten.TouchPosition(id)
+		if y >= screenHeight/2 {
+			return false
+		}
 		if x >= screenWidth/2 {
 			return true
 		}
@@ -67,9 +73,11 @@ func (g *Game) Update() error {
 
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) || g.leftTouched() {
 		next.X -= 2
-	} else if ebiten.IsKeyPressed(ebiten.KeyArrowRight) || g.rightTouched() {
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) || g.rightTouched() {
 		next.X += 2
-	} else if ebiten.IsKeyPressed(ebiten.KeySpace) || g.bottomTouched() {
+	}
+	if ebiten.IsKeyPressed(ebiten.KeySpace) || g.bottomTouched() {
 		isKeyPressed = true
 	} else if isKeyPressed {
 		isKeyPressed = false
