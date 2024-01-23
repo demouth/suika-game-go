@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"math/rand"
-	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -22,10 +20,10 @@ type Game struct {
 var (
 	fruits = []*Fruit{}
 	world  = World{X: 120, Y: 100, Width: 240, Height: 540}
-	next   = NewApple(world.Width/2, 0)
 
-	calc = &Calc{World: world}
-	draw = &Draw{}
+	dropper = NewDropper(world)
+	calc    = &Calc{World: world}
+	draw    = &Draw{}
 
 	isKeyPressed = false
 )
@@ -72,32 +70,18 @@ func (g *Game) Update() error {
 	g.touchIDs = ebiten.AppendTouchIDs(g.touchIDs[:0])
 
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) || g.leftTouched() {
-		next.X -= 2
+		dropper.MoveLeft()
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) || g.rightTouched() {
-		next.X += 2
+		dropper.MoveRight()
 	}
 	if ebiten.IsKeyPressed(ebiten.KeySpace) || g.bottomTouched() {
 		isKeyPressed = true
 	} else if isKeyPressed {
 		isKeyPressed = false
-		fruits = append(fruits, next)
-		r := rand.New(rand.NewSource(time.Now().UnixNano()))
-		f := r.Float64()
-		if f < 0.5 {
-			next = NewApple(next.X, next.Y)
-		} else if f < 0.75 {
-			next = NewOrange(next.X, next.Y)
-		} else {
-			next = NewGrape(next.X, next.Y)
+		if next := dropper.Drop(); next != nil {
+			fruits = append(fruits, next)
 		}
-	}
-
-	if next.X-next.Radius < 0 {
-		next.X = next.Radius
-	}
-	if world.Width-next.Radius < next.X {
-		next.X = world.Width - next.Radius
 	}
 
 	return nil
@@ -105,7 +89,9 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	draw.World(screen, world)
-	draw.Fruit(screen, world, next)
+	if next := dropper.Next(); next != nil {
+		draw.Fruit(screen, world, next)
+	}
 	draw.Fruits(screen, world, fruits)
 	msg := fmt.Sprintf(
 		"<-: move left\n->: move right\nspace: drop fruit\nHI-SCORE: %d\nSCORE: %d\nFPS: %0.2f",
