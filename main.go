@@ -96,7 +96,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 	draw.Fruits(screen, world, fruits)
 	msg := fmt.Sprintf(
-		"<-: move left\n->: move right\nspace: drop fruit\nHI-SCORE: %d\nSCORE: %d\nFPS: %0.2f",
+		"PC:\n  <- key: move left\n  -> key: move right\n  spacebar: drop fruit\n"+
+			"Touch Devices:\n  left: move left\n  right: move right\n  bottom: drop fruit\n"+
+			"HI-SCORE: %d\nSCORE: %d\nFPS: %0.2f",
 		calc.HiScore,
 		calc.Score,
 		ebiten.ActualFPS(),
