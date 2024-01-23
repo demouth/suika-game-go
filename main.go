@@ -84,6 +84,8 @@ func (g *Game) Update() error {
 		}
 	}
 
+	dropper.Tick()
+
 	return nil
 }
 

@@ -6,8 +6,9 @@ import (
 )
 
 type Dropper struct {
-	World World
-	next  *Fruit
+	World   World
+	next    *Fruit
+	counter int
 }
 
 func NewDropper(world World) *Dropper {
@@ -38,14 +39,24 @@ func (d *Dropper) MoveRight() {
 }
 
 func (d *Dropper) Next() *Fruit {
+	if d.counter < 0 {
+		return nil
+	}
 	return d.next
 }
 
 func (d *Dropper) Tick() {
-
+	if d.counter >= 0 {
+		return
+	}
+	d.counter++
 }
 
 func (d *Dropper) Drop() *Fruit {
+	if d.counter < 0 {
+		return nil
+	}
+
 	var x float64
 	var y float64
 	if d.next != nil {
@@ -66,6 +77,8 @@ func (d *Dropper) Drop() *Fruit {
 
 	ret := d.next
 	d.next = next
+
+	d.counter = -15
 
 	return ret
 }
