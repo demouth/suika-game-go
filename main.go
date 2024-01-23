@@ -71,7 +71,7 @@ func (g *Game) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) || g.rightTouched() {
 		next.X += 2
 	}
-	if ebiten.IsKeyPressed(ebiten.KeySpace) || g.rightTouched() {
+	if ebiten.IsKeyPressed(ebiten.KeySpace) || g.bottomTouched() {
 		isKeyPressed = true
 	} else if isKeyPressed {
 		isKeyPressed = false
