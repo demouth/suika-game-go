@@ -1,6 +1,16 @@
 <!DOCTYPE html>
-<iframe src="main.html" width="480" height="640" scrolling="no" frameborder="0"></iframe>
+<script src="wasm_exec.js"></script>
+<script>
+// Polyfill
+if (!WebAssembly.instantiateStreaming) {
+    WebAssembly.instantiateStreaming = async (resp, importObject) => {
+        const source = await (await resp).arrayBuffer();
+        return await WebAssembly.instantiate(source, importObject);
+    };
+}
 
-<p>
-    <a href="https://github.com/demouth/suika-game-go">https://github.com/demouth/suika-game-go</a>
-</p>
+const go = new Go();
+WebAssembly.instantiateStreaming(fetch("suika-game-go.wasm"), go.importObject).then(result => {
+    go.run(result.instance);
+});
+</script>
