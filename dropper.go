@@ -23,9 +23,7 @@ func (d *Dropper) MoveLeft() {
 		return
 	}
 	d.next.X -= 2
-	if d.next.X-d.next.Radius < 0 {
-		d.next.X = d.next.Radius
-	}
+	d.wrap()
 }
 
 func (d *Dropper) MoveRight() {
@@ -33,6 +31,16 @@ func (d *Dropper) MoveRight() {
 		return
 	}
 	d.next.X += 2
+	d.wrap()
+}
+
+func (d *Dropper) wrap() {
+	if d.next == nil {
+		return
+	}
+	if d.next.X-d.next.Radius < 0 {
+		d.next.X = d.next.Radius
+	}
 	if d.World.Width-d.next.Radius < d.next.X {
 		d.next.X = d.World.Width - d.next.Radius
 	}
@@ -77,6 +85,8 @@ func (d *Dropper) Drop() *Fruit {
 
 	ret := d.next
 	d.next = next
+
+	d.wrap()
 
 	d.counter = -15
 
