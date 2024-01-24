@@ -19,7 +19,7 @@ type Game struct {
 
 var (
 	fruits = []*Fruit{}
-	world  = World{X: 120, Y: 100, Width: 240, Height: 540}
+	world  = World{X: 90, Y: 100, Width: 300, Height: 540}
 
 	dropper = NewDropper(world)
 	calc    = &Calc{World: world}
