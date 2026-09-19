@@ -19,6 +19,10 @@ type Fruit struct {
 	Remove bool
 }
 
+func (f *Fruit) Mass() float64 {
+	return f.Radius * f.Radius
+}
+
 func NewApple(x float64, y float64) *Fruit {
 	return &Fruit{
 		X:      x,

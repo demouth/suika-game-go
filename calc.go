@@ -124,15 +124,20 @@ func (u *Calc) hitTest(fruits []*Fruit) {
 				ty := f.Y + math.Sin(angle)*minD
 				ax := (tx - g.X) * spring
 				ay := (ty - g.Y) * spring
-				f.VX -= ax
-				f.VY -= ay
-				g.VX += ax
-				g.VY += ay
 
-				f.X = f.X - math.Cos(angle)*(minD-d)/2
-				f.Y = f.Y - math.Sin(angle)*(minD-d)/2
-				g.X = g.X + math.Cos(angle)*(minD-d)/2
-				g.Y = g.Y + math.Sin(angle)*(minD-d)/2
+				mf, mg := f.Mass(), g.Mass()
+				rf := mg / (mf + mg)
+				rg := mf / (mf + mg)
+
+				f.VX -= ax * rf * 2
+				f.VY -= ay * rf * 2
+				g.VX += ax * rg * 2
+				g.VY += ay * rg * 2
+
+				f.X = f.X - math.Cos(angle)*(minD-d)*rf
+				f.Y = f.Y - math.Sin(angle)*(minD-d)*rf
+				g.X = g.X + math.Cos(angle)*(minD-d)*rg
+				g.Y = g.Y + math.Sin(angle)*(minD-d)*rg
 			}
 		}
 	}
