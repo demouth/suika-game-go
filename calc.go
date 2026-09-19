@@ -3,7 +3,7 @@ package main
 import "math"
 
 const (
-	gravity  = 0.98
+	gravity  = 0.4
 	friction = 0.98
 	spring   = 0.4
 	bounce   = 0.3
