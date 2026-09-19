@@ -61,7 +61,7 @@ func NewMelon(x float64, y float64) *Fruit {
 	return &Fruit{
 		X:      x,
 		Y:      y,
-		Radius: 80,
+		Radius: 95,
 		Type:   MELON,
 	}
 }
@@ -70,7 +70,7 @@ func NewWatermelon(x float64, y float64) *Fruit {
 	return &Fruit{
 		X:      x,
 		Y:      y,
-		Radius: 95,
+		Radius: 125,
 		Type:   WATERMELON,
 	}
 }
