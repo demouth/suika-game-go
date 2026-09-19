@@ -9,6 +9,7 @@ const (
 	bounce   = 0.3
 
 	floorFriction = 0.97
+	maxOverlap    = 2.5
 )
 
 type Calc struct {
@@ -124,8 +125,12 @@ func (u *Calc) hitTest(fruits []*Fruit) {
 				angle := math.Atan2(dy, dx)
 				tx := f.X + math.Cos(angle)*minD
 				ty := f.Y + math.Sin(angle)*minD
-				ax := (tx - g.X) * spring
-				ay := (ty - g.Y) * spring
+				pushScale := 1.0
+				if overlap := minD - d; overlap > maxOverlap {
+					pushScale = maxOverlap / overlap
+				}
+				ax := (tx - g.X) * spring * pushScale
+				ay := (ty - g.Y) * spring * pushScale
 
 				mf, mg := f.Mass(), g.Mass()
 				rf := mg / (mf + mg)
