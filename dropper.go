@@ -88,7 +88,7 @@ func (d *Dropper) Drop() *Fruit {
 
 	d.wrap()
 
-	d.counter = -15
+	d.counter = -25
 
 	return ret
 }
