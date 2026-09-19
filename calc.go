@@ -7,6 +7,8 @@ const (
 	friction = 0.98
 	spring   = 0.4
 	bounce   = 0.3
+
+	floorFriction = 0.97
 )
 
 type Calc struct {
@@ -159,6 +161,7 @@ func (u *Calc) screenWrap(fruits []*Fruit) {
 		} else if u.World.Height < f.Y+f.Radius {
 			f.Y = u.World.Height - f.Radius
 			f.VY *= -bounce
+			f.VX *= floorFriction
 		}
 	}
 }
