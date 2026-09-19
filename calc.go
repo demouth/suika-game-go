@@ -5,11 +5,13 @@ import "math"
 const (
 	gravity  = 0.4
 	friction = 0.98
-	spring   = 0.4
 	bounce   = 0.3
 
 	floorFriction = 0.97
-	maxOverlap    = 2.5
+	restitution   = 0.2
+	restThreshold = 1.0
+	iterations    = 6
+	contactEps    = 0.01
 )
 
 type Calc struct {
@@ -28,9 +30,12 @@ func (u *Calc) Fruits(fruits []*Fruit) []*Fruit {
 	}
 
 	fruits = u.combine(fruits)
-	u.hitTest(fruits)
 	u.move(fruits)
-	u.screenWrap(fruits)
+	for i := 0; i < iterations; i++ {
+		u.hitTest(fruits)
+		u.clampWalls(fruits)
+	}
+	u.wallResponse(fruits)
 	return fruits
 }
 
@@ -99,9 +104,7 @@ func (u *Calc) combine(fruits []*Fruit) []*Fruit {
 }
 
 func (u *Calc) move(fruits []*Fruit) {
-	l := len(fruits)
-	for i := 0; i < l; i++ {
-		f := fruits[i]
+	for _, f := range fruits {
 		f.VX *= friction
 		f.VY *= friction
 		f.VY += gravity
@@ -120,53 +123,74 @@ func (u *Calc) hitTest(fruits []*Fruit) {
 			dy := g.Y - f.Y
 			d := math.Sqrt(dx*dx + dy*dy)
 			minD := f.Radius + g.Radius
-			if d < minD {
-				// collision
-				angle := math.Atan2(dy, dx)
-				tx := f.X + math.Cos(angle)*minD
-				ty := f.Y + math.Sin(angle)*minD
-				pushScale := 1.0
-				if overlap := minD - d; overlap > maxOverlap {
-					pushScale = maxOverlap / overlap
-				}
-				ax := (tx - g.X) * spring * pushScale
-				ay := (ty - g.Y) * spring * pushScale
-
-				mf, mg := f.Mass(), g.Mass()
-				rf := mg / (mf + mg)
-				rg := mf / (mf + mg)
-
-				f.VX -= ax * rf * 2
-				f.VY -= ay * rf * 2
-				g.VX += ax * rg * 2
-				g.VY += ay * rg * 2
-
-				f.X = f.X - math.Cos(angle)*(minD-d)*rf
-				f.Y = f.Y - math.Sin(angle)*(minD-d)*rf
-				g.X = g.X + math.Cos(angle)*(minD-d)*rg
-				g.Y = g.Y + math.Sin(angle)*(minD-d)*rg
+			if d >= minD {
+				continue
 			}
+
+			nx, ny := 1.0, 0.0
+			if d > 0 {
+				nx, ny = dx/d, dy/d
+			}
+
+			mf, mg := f.Mass(), g.Mass()
+			rf := mg / (mf + mg)
+			rg := mf / (mf + mg)
+
+			overlap := minD - d
+			f.X -= nx * overlap * rf
+			f.Y -= ny * overlap * rf
+			g.X += nx * overlap * rg
+			g.Y += ny * overlap * rg
+
+			vrel := (g.VX-f.VX)*nx + (g.VY-f.VY)*ny
+			if vrel >= 0 {
+				continue
+			}
+			e := restitution
+			if -vrel < restThreshold {
+				e = 0
+			}
+			j2 := -(1 + e) * vrel / (1/mf + 1/mg)
+			f.VX -= j2 / mf * nx
+			f.VY -= j2 / mf * ny
+			g.VX += j2 / mg * nx
+			g.VY += j2 / mg * ny
 		}
 	}
 }
 
-func (u *Calc) screenWrap(fruits []*Fruit) {
-	l := len(fruits)
-	for i := 0; i < l; i++ {
-		f := fruits[i]
+func (u *Calc) clampWalls(fruits []*Fruit) {
+	for _, f := range fruits {
 		if f.X-f.Radius < 0 {
 			f.X = f.Radius
-			f.VX *= -bounce
 		} else if u.World.Width < f.X+f.Radius {
 			f.X = u.World.Width - f.Radius
-			f.VX *= -bounce
 		}
-		if f.Y < 0 {
-			// no screen wrap
-		} else if u.World.Height < f.Y+f.Radius {
+		if 0 <= f.Y && u.World.Height < f.Y+f.Radius {
 			f.Y = u.World.Height - f.Radius
-			f.VY *= -bounce
+		}
+	}
+}
+
+func (u *Calc) wallResponse(fruits []*Fruit) {
+	for _, f := range fruits {
+		if f.X-f.Radius <= contactEps && f.VX < 0 {
+			f.VX = wallBounce(f.VX)
+		} else if u.World.Width <= f.X+f.Radius+contactEps && f.VX > 0 {
+			f.VX = wallBounce(f.VX)
+		}
+		if 0 <= f.Y && u.World.Height <= f.Y+f.Radius+contactEps {
+			if f.VY > 0 {
+				f.VY = wallBounce(f.VY)
+			}
 			f.VX *= floorFriction
 		}
 	}
+}
+
+func wallBounce(v float64) float64 {
+	if math.Abs(v) < restThreshold {
+		return 0
+	}
+	return -v * bounce
 }
